@@ -1,5 +1,4 @@
-#include<iostream>
-#include <math.h>
+#include <bits/stdc++.h>
 using namespace std;
 
 void printPrimes(int a, int b){
@@ -24,6 +23,38 @@ void printPrimes(int a, int b){
         }
         if(isPrime){
             cout<<i<<endl;
+        }
+    }
+}
+
+void printPrimesMoreEfficiently(int a , int b){
+    vector<int> num(b-1);
+    vector<bool> num_mask(b-1);
+
+    iota(num.begin(),num.end(),2);
+
+    int p = 2;
+    bool stopSearch = false;
+
+    while(!stopSearch){
+        for(int i = p*p ; i <= b ; i+=p){
+            num_mask[i-2]=true;
+        }
+        stopSearch = true;
+        for(int i = p+1 ; i <= b ; i++){
+            if(!num_mask[i-2]){
+                p=i;
+                stopSearch = false;
+                break;
+            }
+        }
+    }
+
+    if(a<=2)a=2;
+
+    for(int i = a-2 ; i < num.size() ; i++){
+        if(num_mask[i]==false){
+            cout<<num[i]<<endl;
         }
     }
 }
