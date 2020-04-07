@@ -72,6 +72,112 @@ void solve(string exp){
     }
 }
 
+struct Node{
+    char op;
+    bool isAlpha;
+    Node* left;
+    Node* right;
+
+    Node(char c,bool isAlpha):op(c),isAlpha(isAlpha),left(NULL),right(NULL){};
+    Node(Node *n){
+        op = n->op;
+        isAlpha = n->isAlpha;
+        left = n->left;
+        right = n->right;
+    }
+    Node(char c,bool isAlpha,Node *left, Node *right):op(c),isAlpha(isAlpha),left(left),right(right){};
+};
+
+class Tree{
+    public:
+    Node *head;
+
+    Tree(){
+        head=NULL;
+    }
+
+    bool isEmpty(){
+        if(head==NULL){
+            return true;
+        }else return false;
+    }
+
+    int precedence(Node *n){
+        char op = n->op;
+
+        return priority(op);
+    }
+
+    void swap(Node *one, Node *two){
+        Node *temp = new Node(one);
+
+        one->op = two->op;
+        one->isAlpha = two->isAlpha;
+        one->left = two->left;
+        one->right = two->right;
+
+        two->op = temp->op;
+        two->isAlpha = temp->isAlpha;
+        two->left = temp->left;
+        two->right = temp->right;
+    }
+
+    void addNode(Node *n){
+        if(isEmpty()){
+            head = n;
+            return;
+        }
+
+        if(n->isAlpha){
+            addAlphaNode(head,n);
+        }else addOperatorNode(head,n);
+    }
+
+    void addAlphaNode(Node *treeN, Node *newN){
+        if(treeN->left==NULL){
+            treeN->left = newN;
+        }else if(treeN -> right == NULL){
+            treeN->right = newN;
+        }else addAlphaNode(treeN->right,newN);
+    }
+
+    void addOperatorNode(Node *treeN, Node *newN){
+        if(treeN->isAlpha){
+            swap(treeN,newN);
+            treeN->left=newN;
+            // return newN;
+        }else if(precedence(newN)<precedence(treeN)){
+            swap(treeN,newN);
+            treeN->left=newN;
+            // return newN;
+        }else addOperatorNode(treeN->right,newN);
+    }
+
+    void postorder(Node *n){
+        if(n==NULL)return;
+        postorder(n->left);
+        postorder(n->right);
+        cout<<n->op;
+    }
+
+    void printPostorder(){
+        if(!isEmpty()){
+            postorder(head);
+        }
+    }
+};
+
+void solveUsingTrees(string exp){
+    Tree *tree = new Tree();
+    
+    for(auto i : exp){
+        Node *n = new Node(i,isalpha(i));
+        tree->addNode(n);
+    }
+
+    tree->printPostorder();
+}
+
 int main(int argc, char const *argv[])
 {
     int n;
@@ -86,7 +192,8 @@ int main(int argc, char const *argv[])
     }
 
     for(auto i : exps){
-        solve(i);
+        // solve(i);
+        solveUsingTrees(i);
         cout<<endl;
     }
 
