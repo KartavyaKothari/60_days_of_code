@@ -63,13 +63,33 @@ int min_cost_path(int i , int j, vector<vector<int>> cost_table){
     );
 }
 
+void createCumulativeCostTable(vector<vector<int>> &table, vector<vector<int>> cost_table){
+    table[0][0]=0;
+    table[0][1]=table[1][0]=cost_table[0][0];
+
+    // cout<<table[0].size()<<endl;
+
+    for(int i = 1 ; i < table.size() ; i++){
+        for(int j = 1 ; j < table[0].size() ; j++){
+            table[i][j]=cost_table[i-1][j-1] + min(
+                table[i-1][j],
+                table[i][j-1],
+                table[i-1][j-1]
+            );
+        }
+    }
+}
+
 void solve(vector<vector<int>> cost_table){
-    cout<<min_cost_path(cost_table.size()-1,cost_table[0].size()-1,cost_table);
-    // for(auto row : cost_table){
+    // cout<<min_cost_path(cost_table.size()-1,cost_table[0].size()-1,cost_table);
+    vector<vector<int>> table(cost_table.size()+1,vector<int> (cost_table[0].size()+1,INT_MAX));
+    createCumulativeCostTable(table,cost_table);
+    // for(auto row : table){
     //     for(auto ele : row){
     //         cout<<ele<<" ";
     //     }cout<<endl;
     // }
+    cout<<table.back().back();
 }
 
 int main(int argc, char const *argv[])
