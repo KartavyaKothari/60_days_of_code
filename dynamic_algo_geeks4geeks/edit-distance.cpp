@@ -17,7 +17,7 @@ int calculate_cost(string str1, string str2){
     if(str1.length()==0){
         return str2.length();
     }
-    
+
     if(str2.length()==0){
         return str1.length();
     }
@@ -33,11 +33,37 @@ int calculate_cost(string str1, string str2){
     );
 }
 
+void createCostTable(string str1, string str2, vector<vector<int>> &table){
+    for(int i = 0 ; i <= str1.length() ; i++){
+        for(int j = 0 ; j <= str2.length() ; j++){
+            if(i==0){
+                table[i][j]=j;
+                continue;
+            }
+            if(j==0){
+                table[i][j]=i;
+                continue;
+            }
+            if(str1[i-1]==str2[j-1]){
+                table[i][j]=table[i-1][j-1];
+                continue;
+            }
+            
+            table[i][j]=1+min(table[i-1][j-1],table[i][j-1],table[i-1][j]);
+        }
+    }
+}
+
 void solve(pair<string,string> seq){
     string str1 = seq.first;
     string str2 = seq.second;
 
-    cout<<calculate_cost(str1,str2);
+    vector<vector<int>> table(str1.length()+1,vector<int> (str2.length()+1,0));
+
+    createCostTable(str1,str2,table);
+
+    cout<<table.back().back();
+    // cout<<calculate_cost(str1,str2);
 }
 
 int main(int argc, char const *argv[])
